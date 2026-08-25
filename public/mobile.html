@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<title>SNS 촬영용 화면 · 모바일</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+html,body{height:100%}
+body{background:#141414;font-family:var(--font);color:var(--fg);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+button{text-align:left}
+#phone{position:relative;width:100%;height:100vh;height:100dvh;background:var(--bg);overflow:hidden;margin:0 auto;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+@media (min-width:600px){
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh}
+  #phone{width:412px;height:min(915px,100vh);height:min(915px,100dvh);border-radius:28px;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg)}
+.screen.hidden{display:none}
+.topbar{display:flex;align-items:center;gap:2px;padding:0 6px;padding-top:env(safe-area-inset-top);height:calc(46px + env(safe-area-inset-top));flex:none;background:var(--bg)}
+.topbar .ttl{flex:1;min-width:0;display:flex;align-items:center;gap:5px;font-weight:700;font-size:20px;padding:0 4px}
+.topbar .ttl.self{padding-left:10px}
+.topbar .ttl.plain{font-size:16px}
+.topbar .ttl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ibtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex:none}
+.ibtn .ic{width:26px;height:26px}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.tabbar{flex:none;display:flex;justify-content:space-around;align-items:center;height:calc(50px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);border-top:1px solid var(--line2);background:var(--bg)}
+.tabbar .ibtn .ic{width:27px;height:27px}
+.tabbar .av.on{box-shadow:0 0 0 1px #fff,0 0 0 2.5px var(--fg)}
+
+/* 프로필 */
+.phead{display:flex;align-items:center;gap:22px;padding:10px 16px 8px}
+.stats{flex:1;display:flex;justify-content:space-around;text-align:center}
+.stats b{display:block;font-size:17px;font-weight:700;line-height:20px}
+.stats span{font-size:13px}
+.pinfo{padding:4px 16px 12px;font-size:14px;line-height:18px}
+.pinfo:empty{display:none}
+.pname{font-weight:600}
+.pbio{white-space:pre-wrap;word-break:break-word}
+.plink{color:var(--link);font-weight:500;display:inline-flex;align-items:center;gap:4px;margin-top:2px}
+.plink .ic{width:14px;height:14px}
+.pbtns{display:flex;gap:6px;padding:0 16px 14px}
+.btn{height:32px;border-radius:8px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:2px;flex:1;background:var(--btn);color:var(--fg);text-align:center;white-space:nowrap}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.icon{flex:none;width:34px}
+.btn .ic{width:18px;height:18px}
+.ptabs{display:flex;border-top:1px solid var(--line2)}
+.ptabs button{flex:1;height:44px;display:flex;align-items:center;justify-content:center;color:#8e8e8e;border-bottom:1.5px solid transparent}
+.ptabs button.on{color:var(--fg);border-bottom-color:var(--fg)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;padding-bottom:8px}
+.tile{aspect-ratio:1;background:#f0f0f0;overflow:hidden}
+.tile img{width:100%;height:100%;object-fit:cover}
+
+/* 게시물 */
+.post-h{display:flex;align-items:center;gap:10px;padding:8px 12px}
+.post-h .un{font-weight:600;font-size:14px;display:flex;align-items:center;gap:4px;min-width:0}
+.post-h .un span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.post-img{width:100%;aspect-ratio:1;background:#000;overflow:hidden}
+.post-img img,.post-img .phimg{width:100%;height:100%;object-fit:cover}
+.post-act{display:flex;align-items:center;gap:16px;padding:10px 14px 6px}
+.ab{display:flex;color:var(--fg)}
+.ab.liked{color:var(--red)}
+.post-meta{padding:0 14px 16px;font-size:14px;line-height:19px}
+.post-meta .likes{font-weight:600;margin-bottom:3px}
+.post-meta .cap{white-space:pre-wrap;word-break:break-word}
+.post-meta .cap b{font-weight:600;margin-right:5px}
+.post-meta .cmt{color:var(--muted);margin-top:4px;display:block}
+.post-meta .time{color:var(--muted);font-size:12px;margin-top:5px}
+
+/* 댓글 시트 */
+.sheet{position:absolute;inset:0;z-index:30;visibility:hidden;transition:visibility 0s .32s}
+.sheet.open{visibility:visible;transition:none}
+.sheet-bd{position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .28s}
+.sheet.open .sheet-bd{background:rgba(0,0,0,.45)}
+.sheet-panel{position:absolute;left:0;right:0;bottom:0;height:88%;background:var(--bg);border-radius:18px 18px 0 0;display:flex;flex-direction:column;transform:translateY(102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);box-shadow:0 -4px 20px rgba(0,0,0,.15)}
+.sheet.open .sheet-panel{transform:translateY(0)}
+.sheet-hd{flex:none;padding:8px 0 10px;text-align:center;border-bottom:1px solid var(--line2)}
+.sheet-hd .handle{width:38px;height:4px;border-radius:2px;background:#cdcdcd;margin:0 auto 10px}
+.sheet-hd .t{font-weight:700;font-size:16px}
+.sheet-hd .t small{font-weight:500;color:var(--muted);font-size:14px;margin-left:2px}
+.clist{flex:1;overflow-y:auto;padding:6px 0 10px;overscroll-behavior:contain}
+.crow{display:flex;gap:12px;padding:9px 16px;align-items:flex-start}
+.crow.caption{border-bottom:1px solid var(--line2);padding-bottom:14px;margin-bottom:4px}
+.crow .body{flex:1;min-width:0;font-size:14px;line-height:18px}
+.crow .un{font-weight:600;font-size:13px;display:flex;align-items:center;gap:4px}
+.crow .un .time{color:var(--muted);font-weight:400;font-size:12px;margin-left:2px}
+.crow .txt{word-break:break-word;white-space:pre-wrap;margin-top:2px}
+.crow .meta{display:flex;gap:14px;color:var(--muted);font-size:12px;font-weight:600;margin-top:7px}
+.crow .replies{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;font-weight:600;margin-top:12px}
+.crow .replies:before{content:"";width:22px;height:1px;background:#c4c4c4}
+.hcol{flex:none;width:28px;display:flex;flex-direction:column;align-items:center;gap:3px;padding-top:6px;color:var(--muted);font-size:11px}
+.hcol .ic{width:14px;height:14px}
+.hcol.liked{color:var(--red)}
+.cinput{flex:none;border-top:1px solid var(--line2);padding:6px 12px;padding-bottom:calc(8px + env(safe-area-inset-bottom));background:var(--bg)}
+.emojis{display:flex;justify-content:space-around;font-size:22px;padding:4px 0 10px}
+.emojis button{padding:2px 4px}
+.cinput .row{display:flex;align-items:center;gap:10px}
+.cinput input{flex:1;min-width:0;font:inherit;font-size:16px;border:0;outline:0;background:transparent;color:var(--fg)}
+.cinput input::placeholder{color:#9a9a9a}
+.cinput .pbtn{color:var(--blue);font-weight:600;font-size:14px;opacity:.35;flex:none}
+.cinput .pbtn.on{opacity:1}
+
+/* 설정 위치 */
+#phone .editor{position:absolute;inset:0;z-index:50}
+#phone .ed-hd{padding-top:calc(10px + env(safe-area-inset-top))}
+.fab{position:absolute;right:14px;bottom:calc(66px + env(safe-area-inset-bottom))}
+#hotspot{position:absolute;top:0;right:0;width:64px;height:64px;z-index:60}
+#toast{position:absolute;left:50%;bottom:110px;transform:translateX(-50%);z-index:70}
+</style>
+</head>
+<body>
+<div id="phone">
+
+  <div class="screen" id="scr-profile">
+    <header class="topbar" id="p-top"></header>
+    <div class="scroll" id="p-scroll">
+      <section class="phead" id="p-head"></section>
+      <section class="pinfo" id="p-info"></section>
+      <section class="pbtns" id="p-btns"></section>
+      <nav class="ptabs" id="p-tabs"></nav>
+      <div class="grid" id="p-grid"></div>
+    </div>
+    <nav class="tabbar" id="p-tabbar"></nav>
+  </div>
+
+  <div class="screen hidden" id="scr-post">
+    <header class="topbar">
+      <button class="ibtn" data-act="back" id="post-back"></button>
+      <div class="ttl plain"><span>게시물</span></div>
+    </header>
+    <div class="scroll" id="post-scroll"></div>
+    <nav class="tabbar" id="post-tabbar"></nav>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <div class="sheet-bd" id="sheet-bd"></div>
+    <div class="sheet-panel" id="sheet-panel">
+      <div class="sheet-hd" id="sheet-hd"><div class="handle"></div><div class="t">댓글 <small id="sheet-count"></small></div></div>
+      <div class="clist" id="clist"></div>
+      <div class="cinput">
+        <div class="emojis" id="emojis"></div>
+        <div class="row">
+          <div id="cin-av"></div>
+          <input id="cin" type="text" autocomplete="off" placeholder="댓글 달기...">
+          <button class="pbtn" id="cpost">게시</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="fab" id="fab">⚙ 설정</button>
+  <div class="editor hidden" id="editor"></div>
+  <div id="hotspot"></div>
+  <div id="toast"></div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+(function(){
+'use strict';
+const {$, esc, linkify, I, ic, vb, av, phGrad, S, ui, cnt, actions}=SNS;
+
+function renderProfile(){
+  const p=S.profile, ver=p.verified?vb:'';
+  $('#p-top').innerHTML=p.kind==='self'
+    ?`<button class="ttl self"><span>${esc(p.username)}</span>${ver}${ic(I.chev,'s')}</button><button class="ibtn">${ic(I.plus)}</button><button class="ibtn">${ic(I.menu)}</button>`
+    :`<button class="ibtn">${ic(I.back)}</button><div class="ttl"><span>${esc(p.username)}</span>${ver}</div><button class="ibtn">${ic(I.bell)}</button><button class="ibtn">${ic(I.more)}</button>`;
+  $('#p-head').innerHTML=`${av(p.avatar,86)}<div class="stats"><div><b>${esc(p.posts)}</b><span>게시물</span></div><div><b>${esc(p.followers)}</b><span>팔로워</span></div><div><b>${esc(p.following)}</b><span>팔로잉</span></div></div>`;
+  $('#p-info').innerHTML=`${p.name?`<div class="pname">${esc(p.name)}</div>`:''}${p.bio?`<div class="pbio">${linkify(p.bio)}</div>`:''}${p.link?`<a class="plink">${ic(I.link)}<span>${esc(p.link)}</span></a>`:''}`;
+  $('#p-btns').innerHTML=p.kind==='self'
+    ?`<button class="btn">프로필 편집</button><button class="btn">프로필 공유</button><button class="btn icon">${ic(I.personAdd)}</button>`
+    :`${p.follow==='following'?`<button class="btn" data-act="toggle-follow">팔로잉 ${ic(I.chev)}</button>`:`<button class="btn primary" data-act="toggle-follow">팔로우</button>`}<button class="btn">메시지</button><button class="btn icon">${ic(I.personAdd)}</button>`;
+  $('#p-tabs').innerHTML=`<button class="on">${ic(I.grid)}</button><button>${ic(I.play)}</button><button>${ic(I.tag)}</button>`;
+  let tiles='';
+  if(!S.feed.length){ for(let i=0;i<12;i++) tiles+=`<div class="tile" style="background:${phGrad(i)}" data-open="-1"></div>`; }
+  else{ const n=p.fillGrid?Math.max(S.feed.length,12):S.feed.length; for(let i=0;i<n;i++){const k=i%S.feed.length;tiles+=`<div class="tile" data-open="${k}"><img src="${S.feed[k]}" alt=""></div>`;} }
+  $('#p-grid').innerHTML=tiles;
+  document.title=(p.name?p.name+' ':'')+'(@'+p.username+')';
+  const self=p.kind==='self', me=self?p.avatar:S.viewer.avatar;
+  const tab=`<button class="ibtn">${ic(I.home)}</button><button class="ibtn">${ic(I.search)}</button><button class="ibtn">${ic(I.plus)}</button><button class="ibtn">${ic(I.play)}</button><button class="ibtn">${av(me,26,self?'on':'')}</button>`;
+  $('#p-tabbar').innerHTML=tab; $('#post-tabbar').innerHTML=tab;
+}
+function renderPost(){
+  const p=S.profile, po=S.post, img=actions.currentPostImage(), ver=p.verified?vb:'';
+  $('#post-scroll').innerHTML=`
+    <div class="post-h">${av(p.avatar,32)}<div class="un"><span>${esc(p.username)}</span>${ver}</div><span class="sp"></span><button class="ibtn">${ic(I.more)}</button></div>
+    <div class="post-img">${img?`<img src="${img}" alt="">`:`<div class="phimg" style="background:${phGrad(ui.postIndex)}"></div>`}</div>
+    <div class="post-act">
+      <button class="ab ${po.liked?'liked':''}" data-act="plike">${ic(I.heart(po.liked))}</button>
+      <button class="ab" data-act="open-sheet">${ic(I.comment)}</button>
+      <button class="ab">${ic(I.send)}</button>
+      <span class="sp"></span>
+      <button class="ab" data-act="psave">${ic(I.bookmark(po.saved))}</button>
+    </div>
+    <div class="post-meta">
+      ${cnt(po.likes)?`<div class="likes">좋아요 ${cnt(po.likes)}개</div>`:''}
+      ${po.caption?`<div class="cap"><b>${esc(p.username)}</b>${linkify(po.caption)}</div>`:''}
+      ${cnt(po.commentCount)?`<button class="cmt" data-act="open-sheet">댓글 ${cnt(po.commentCount)}개 모두 보기</button>`:''}
+      ${po.time?`<div class="time">${esc(po.time)}</div>`:''}
+    </div>`;
+}
+function renderComments(){
+  const p=S.profile, po=S.post, list=$('#clist'), st=list.scrollTop;
+  $('#sheet-count').textContent=cnt(po.commentCount)?String(po.commentCount).trim():'';
+  const cap=po.caption?`<div class="crow caption">${av(p.avatar,32)}<div class="body"><div class="un"><span>${esc(p.username)}</span>${p.verified?vb:''}<span class="time">${esc(po.time)}</span></div><div class="txt">${linkify(po.caption)}</div></div></div>`:'';
+  const rows=S.comments.map(c=>`
+    <div class="crow" data-cid="${c.id}">${av(c.avatar,32)}
+      <div class="body">
+        <div class="un"><span>${esc(c.username)}</span>${c.verified?vb:''}<span class="time">${esc(c.time)}</span></div>
+        <div class="txt">${linkify(c.text)}</div>
+        <div class="meta"><span>답글 달기</span></div>
+        ${c.replies?`<div class="replies">답글 ${esc(c.replies)}개 보기</div>`:''}
+      </div>
+      <button class="hcol ${c.liked?'liked':''}" data-act="clike" data-cid="${c.id}">${ic(I.heart(c.liked))}<span>${cnt(c.likes)}</span></button>
+    </div>`).join('');
+  list.innerHTML=cap+(rows||'<div class="empty"><b>아직 댓글이 없습니다.</b>대화를 시작해보세요.</div>');
+  list.scrollTop=st;
+  $('#cin-av').innerHTML=av(S.viewer.avatar,32);
+  $('#cin').placeholder=`${S.viewer.username||'user'}(으)로 댓글 달기...`;
+}
+function renderAll(){renderProfile();renderPost();renderComments();}
+
+const showScreen=n=>{$('#scr-profile').classList.toggle('hidden',n!=='profile');$('#scr-post').classList.toggle('hidden',n!=='post');if(n==='profile')closeSheet();};
+const openSheet=()=>$('#sheet').classList.add('open');
+const closeSheet=()=>{$('#sheet').classList.remove('open');$('#cin').blur();};
+
+$('#phone').addEventListener('click',e=>{
+  if(e.target.closest('#editor')) return;
+  const t=e.target.closest('[data-act],[data-open]'); if(!t) return;
+  if(t.dataset.open!==undefined){ui.postIndex=+t.dataset.open;renderPost();showScreen('post');return;}
+  switch(t.dataset.act){
+    case 'back': showScreen('profile'); break;
+    case 'toggle-follow': actions.toggleFollow(); break;
+    case 'open-sheet': openSheet(); break;
+    case 'plike': actions.togglePostLike(); break;
+    case 'psave': actions.togglePostSave(); break;
+    case 'clike': actions.toggleCommentLike(t.dataset.cid); break;
+  }
+});
+$('#sheet-bd').addEventListener('click',closeSheet);
+(function(){ /* 시트 아래로 끌어 닫기 */
+  const hd=$('#sheet-hd'), panel=$('#sheet-panel'); let y0=null;
+  hd.addEventListener('touchstart',e=>{y0=e.touches[0].clientY;panel.style.transition='none';},{passive:true});
+  hd.addEventListener('touchmove',e=>{if(y0==null)return;const dy=e.touches[0].clientY-y0;if(dy>0)panel.style.transform=`translateY(${dy}px)`;},{passive:true});
+  hd.addEventListener('touchend',e=>{if(y0==null)return;const dy=e.changedTouches[0].clientY-y0;panel.style.transition='';panel.style.transform='';if(dy>90)closeSheet();y0=null;});
+})();
+$('#post-back').innerHTML=ic(I.back);
+$('#emojis').innerHTML=['❤️','🙌','🔥','👏','😢','😍','😮','😂'].map(e=>`<button type="button">${e}</button>`).join('');
+$('#emojis').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const cin=$('#cin');cin.value+=b.textContent;cin.dispatchEvent(new Event('input'));cin.focus();});
+const cin=$('#cin'), cpost=$('#cpost');
+cin.addEventListener('input',()=>cpost.classList.toggle('on',cin.value.trim().length>0));
+const postComment=()=>{ if(actions.postComment(cin.value)){cin.value='';cpost.classList.remove('on');$('#clist').scrollTop=0;} };
+cin.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();postComment();}});
+cpost.addEventListener('click',postComment);
+
+SNS.init({platform:'mobile',hooks:{
+  renderAll, renderProfile, renderPost, renderComments,
+  openPost(){ui.postIndex=-1;renderPost();showScreen('post');},
+  openComments(){ui.postIndex=-1;renderPost();showScreen('post');setTimeout(openSheet,60);},
+  resetView(){showScreen('profile');}
+}});
+
+/* 키보드가 올라올 때 화면 높이 맞춤 */
+if(window.visualViewport){
+  const vv=window.visualViewport, ph=$('#phone');
+  vv.addEventListener('resize',()=>{if(window.innerWidth<600)ph.style.height=vv.height+'px';else ph.style.height='';});
+}
+})();
+</script>
+</body>
+</html>

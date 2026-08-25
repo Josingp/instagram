@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>SNS 촬영용 화면 · 웹</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--ed:400px}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.edit-on{padding-right:var(--ed)}
+
+/* 좌측 내비게이션 */
+.app{display:flex;min-height:100vh}
+.sidenav{width:244px;flex:none;border-right:1px solid var(--line);padding:8px 12px 20px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:var(--bg)}
+.brand{font-size:24px;font-weight:800;letter-spacing:-.6px;padding:26px 12px 22px;white-space:nowrap}
+.brand .short{display:none}
+.navitem{display:flex;align-items:center;gap:16px;padding:12px;border-radius:8px;font-size:16px;width:100%;text-align:left;margin-bottom:4px;white-space:nowrap}
+.navitem:hover{background:#f2f2f2}
+.navitem.on{font-weight:700}
+.navitem .ic{width:26px;height:26px}
+.navitem .av.nav{box-shadow:0 0 0 2px var(--fg)}
+@media (max-width:1264px){
+  .sidenav{width:72px;padding:8px 8px 20px}
+  .brand{padding:26px 0 22px;text-align:center}
+  .brand .full{display:none}.brand .short{display:inline}
+  .navitem span{display:none}
+  .navitem{justify-content:center;padding:12px 0}
+}
+
+/* 프로필 */
+.main{flex:1;min-width:0}
+.wrap{max-width:975px;margin:0 auto;padding:30px 20px 0}
+.ph{display:flex;margin-bottom:44px}
+.ph-av{width:290px;flex:none;display:flex;justify-content:center;padding-top:4px}
+.ph-info{flex:1;min-width:0}
+.ph-row1{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.un{font-size:20px;font-weight:400;display:flex;align-items:center;gap:6px;margin-right:12px;min-width:0}
+.un span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.un .ic.vb{width:18px;height:18px}
+.btn{height:32px;padding:0 16px;border-radius:8px;font-weight:600;font-size:14px;background:var(--btn);display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.btn:hover{background:#e3e3e3}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.primary:hover{background:#1468d8}
+.btn.icon{width:34px;padding:0;justify-content:center}
+.btn .ic{width:18px;height:18px}
+.ibtn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;flex:none}
+.ph-stats{display:flex;gap:40px;list-style:none;margin-bottom:20px;font-size:16px}
+.ph-stats b{font-weight:600}
+.ph-bio{font-size:14px;line-height:18px}
+.ph-bio .nm{font-weight:600;margin-bottom:2px}
+.ph-bio .bio{white-space:pre-wrap;word-break:break-word}
+.plink{color:var(--link);font-weight:500;display:inline-flex;align-items:center;gap:4px;margin-top:4px;cursor:pointer}
+.plink .ic{width:14px;height:14px}
+.ptabs{border-top:1px solid var(--line);display:flex;justify-content:center;gap:60px}
+.ptabs button{height:52px;margin-top:-1px;border-top:1px solid transparent;display:flex;align-items:center;gap:6px;font-size:12px;letter-spacing:1px;font-weight:600;color:#8e8e8e}
+.ptabs button.on{color:var(--fg);border-top-color:var(--fg)}
+.ptabs .ic{width:12px;height:12px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding-bottom:48px}
+.tile{aspect-ratio:1;overflow:hidden;background:#f0f0f0;cursor:pointer}
+.tile img{width:100%;height:100%;object-fit:cover}
+
+/* 게시물 모달 */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:80}
+.modal.open{display:flex}
+body.edit-on .modal{right:var(--ed)}
+.mclose{position:absolute;top:12px;right:16px;color:#fff;font-size:38px;line-height:1;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-weight:300}
+.mbox{--mh:min(880px,calc(100vh - 64px));display:flex;height:var(--mh);width:min(calc(var(--mh) + 500px),calc(100% - 128px));background:#fff;border-radius:4px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.mimg{flex:1;min-width:280px;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.mimg img{width:100%;height:100%;object-fit:contain}
+.mimg .phimg{width:100%;height:100%}
+.mside{width:500px;flex:none;display:flex;flex-direction:column;border-left:1px solid var(--line2);min-width:0}
+@media (max-width:1100px){.mside{width:380px}}
+.mhd{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line2)}
+.mhd .un2{font-weight:600;font-size:14px;display:flex;align-items:center;gap:4px;flex:1;min-width:0}
+.mhd .un2 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mlist{flex:1;overflow-y:auto;padding:16px 16px 8px}
+.crow{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+.crow.caption{margin-bottom:22px}
+.crow .body{flex:1;min-width:0;font-size:14px;line-height:18px}
+.crow .t b{font-weight:600;margin-right:5px}
+.crow .t .ic.vb{width:14px;height:14px;vertical-align:-2px;margin-right:5px}
+.crow .txt{white-space:pre-wrap;word-break:break-word}
+.crow .meta{display:flex;gap:12px;color:var(--muted);font-size:12px;margin-top:8px}
+.crow .meta .b{font-weight:600}
+.crow .replies{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;font-weight:600;margin-top:14px}
+.crow .replies:before{content:"";width:24px;height:1px;background:#bbb}
+.hbtn{flex:none;padding-top:8px;color:var(--muted)}
+.hbtn .ic{width:12px;height:12px}
+.hbtn.liked{color:var(--red)}
+.mft{border-top:1px solid var(--line2);flex:none}
+.macts{display:flex;align-items:center;gap:14px;padding:8px 16px 6px}
+.ab{display:flex;color:var(--fg)}
+.ab:hover{color:#666}
+.ab.liked,.ab.liked:hover{color:var(--red)}
+.mlikes{font-weight:600;font-size:14px;padding:0 16px;min-height:18px}
+.mtime{font-size:12px;color:var(--muted);padding:6px 16px 12px}
+.minput{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line2);padding:8px 16px;position:relative}
+.minput input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:14px;color:var(--fg);background:transparent}
+.minput input::placeholder{color:#9a9a9a}
+.pbtn{color:var(--blue);font-weight:600;font-size:14px;opacity:.35}
+.pbtn.on{opacity:1}
+.epop{position:absolute;left:12px;bottom:48px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:none;gap:6px;font-size:22px;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.epop.open{display:flex}
+.epop button{padding:2px 4px;border-radius:6px}
+.epop button:hover{background:#f2f2f2}
+
+/* 설정 위치 */
+.editor{position:fixed;top:0;right:0;bottom:0;width:var(--ed);border-left:1px solid #e5e7eb;z-index:90}
+.fab{position:fixed;right:20px;bottom:20px;z-index:85;padding:12px 18px;font-size:14px}
+body.edit-on .fab{display:none}
+#hotspot{position:fixed;top:0;right:0;width:64px;height:64px;z-index:84}
+#toast{position:fixed;left:50%;bottom:36px;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <nav class="sidenav">
+    <div class="brand" id="brand"></div>
+    <div id="navlist"></div>
+    <div class="sp"></div>
+    <button class="navitem" id="nav-more"></button>
+  </nav>
+  <main class="main">
+    <div class="wrap">
+      <header class="ph">
+        <div class="ph-av" id="ph-av"></div>
+        <section class="ph-info">
+          <div class="ph-row1" id="ph-row1"></div>
+          <ul class="ph-stats" id="ph-stats"></ul>
+          <div class="ph-bio" id="ph-bio"></div>
+        </section>
+      </header>
+      <nav class="ptabs" id="p-tabs"></nav>
+      <div class="grid" id="p-grid"></div>
+    </div>
+  </main>
+</div>
+
+<div class="modal" id="modal">
+  <button class="mclose" id="mclose" aria-label="닫기">×</button>
+  <div class="mbox">
+    <div class="mimg" id="mimg"></div>
+    <div class="mside">
+      <div class="mhd" id="mhd"></div>
+      <div class="mlist" id="mlist"></div>
+      <div class="mft">
+        <div class="macts" id="macts"></div>
+        <div class="mlikes" id="mlikes"></div>
+        <div class="mtime" id="mtime"></div>
+        <div class="minput">
+          <div class="epop" id="epop"></div>
+          <button class="ibtn" id="memoji" aria-label="이모지"></button>
+          <input id="min" type="text" autocomplete="off" placeholder="댓글 달기...">
+          <button class="pbtn" id="mpost">게시</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="fab" id="fab">⚙ 설정</button>
+<aside class="editor hidden" id="editor"></aside>
+<div id="hotspot"></div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+(function(){
+'use strict';
+const {$, esc, linkify, I, ic, vb, av, phGrad, S, ui, cnt, actions}=SNS;
+const NAV=[['home','홈'],['search','검색'],['compass','탐색 탭'],['play','동영상'],['send','메시지'],['bell','알림'],['plus','만들기']];
+const modalOpen=()=>$('#modal').classList.contains('open');
+
+function renderProfile(){
+  const p=S.profile, ver=p.verified?vb:'', self=p.kind==='self', me=self?p.avatar:S.viewer.avatar, name=S.app.name||'';
+  $('#brand').innerHTML=`<span class="full">${esc(name)}</span><span class="short">${esc(name.slice(0,1))}</span>`;
+  $('#navlist').innerHTML=NAV.map(([k,l])=>`<button class="navitem">${ic(I[k])}<span>${l}</span></button>`).join('')+`<button class="navitem on">${av(me,26,self?'nav':'')}<span>프로필</span></button>`;
+  $('#nav-more').innerHTML=`${ic(I.menu)}<span>더 보기</span>`;
+  $('#ph-av').innerHTML=av(p.avatar,150);
+  const btns=self
+    ?`<button class="btn">프로필 편집</button><button class="btn">보관된 스토리 보기</button><button class="ibtn">${ic(I.gear)}</button>`
+    :`${p.follow==='following'?`<button class="btn" data-act="toggle-follow">팔로잉 ${ic(I.chev)}</button>`:`<button class="btn primary" data-act="toggle-follow">팔로우</button>`}<button class="btn">메시지</button><button class="btn icon">${ic(I.personAdd)}</button><button class="ibtn">${ic(I.more)}</button>`;
+  $('#ph-row1').innerHTML=`<h2 class="un"><span>${esc(p.username)}</span>${ver}</h2>${btns}`;
+  $('#ph-stats').innerHTML=`<li>게시물 <b>${esc(p.posts)}</b></li><li>팔로워 <b>${esc(p.followers)}</b></li><li>팔로잉 <b>${esc(p.following)}</b></li>`;
+  $('#ph-bio').innerHTML=`${p.name?`<div class="nm">${esc(p.name)}</div>`:''}${p.bio?`<div class="bio">${linkify(p.bio)}</div>`:''}${p.link?`<a class="plink">${ic(I.link)}<span>${esc(p.link)}</span></a>`:''}`;
+  $('#p-tabs').innerHTML=`<button class="on">${ic(I.grid)}게시물</button><button>${ic(I.play)}동영상</button><button>${ic(I.tag)}태그됨</button>`;
+  let tiles='';
+  if(!S.feed.length){ for(let i=0;i<12;i++) tiles+=`<div class="tile" style="background:${phGrad(i)}" data-open="-1"></div>`; }
+  else{ const n=p.fillGrid?Math.max(S.feed.length,12):S.feed.length; for(let i=0;i<n;i++){const k=i%S.feed.length;tiles+=`<div class="tile" data-open="${k}"><img src="${S.feed[k]}" alt=""></div>`;} }
+  $('#p-grid').innerHTML=tiles;
+  document.title=(p.name?p.name+' ':'')+'(@'+p.username+')'+(name?' • '+name:'');
+}
+function renderModal(){
+  const p=S.profile, po=S.post, img=actions.currentPostImage(), ver=p.verified?vb:'';
+  $('#mimg').innerHTML=img?`<img src="${img}" alt="">`:`<div class="phimg" style="background:${phGrad(ui.postIndex)}"></div>`;
+  $('#mhd').innerHTML=`${av(p.avatar,32)}<div class="un2"><span>${esc(p.username)}</span>${ver}</div><button class="ibtn">${ic(I.more)}</button>`;
+  $('#macts').innerHTML=`<button class="ab ${po.liked?'liked':''}" data-act="plike">${ic(I.heart(po.liked))}</button><button class="ab" data-act="focus-input">${ic(I.comment)}</button><button class="ab">${ic(I.send)}</button><span class="sp"></span><button class="ab" data-act="psave">${ic(I.bookmark(po.saved))}</button>`;
+  $('#mlikes').textContent=cnt(po.likes)?`좋아요 ${String(po.likes).trim()}개`:'';
+  $('#mtime').textContent=po.time||'';
+  renderComments();
+}
+function renderComments(){
+  const p=S.profile, po=S.post, list=$('#mlist'), st=list.scrollTop;
+  const cap=po.caption?`<div class="crow caption">${av(p.avatar,32)}<div class="body"><div class="t"><b>${esc(p.username)}</b>${p.verified?vb:''}<span class="txt">${linkify(po.caption)}</span></div><div class="meta"><span>${esc(po.time)}</span></div></div></div>`:'';
+  const rows=S.comments.map(c=>`
+    <div class="crow" data-cid="${c.id}">${av(c.avatar,32)}
+      <div class="body">
+        <div class="t"><b>${esc(c.username)}</b>${c.verified?vb:''}<span class="txt">${linkify(c.text)}</span></div>
+        <div class="meta"><span>${esc(c.time)}</span>${cnt(c.likes)?`<span class="b">좋아요 ${cnt(c.likes)}개</span>`:''}<span class="b">답글 달기</span></div>
+        ${c.replies?`<div class="replies">답글 ${esc(c.replies)}개 보기</div>`:''}
+      </div>
+      <button class="hbtn ${c.liked?'liked':''}" data-act="clike" data-cid="${c.id}">${ic(I.heart(c.liked))}</button>
+    </div>`).join('');
+  list.innerHTML=cap+(rows||'<div class="empty"><b>아직 댓글이 없습니다.</b>대화를 시작해보세요.</div>');
+  list.scrollTop=st;
+}
+function renderAll(){renderProfile();if(modalOpen())renderModal();}
+
+const openModal=idx=>{ui.postIndex=idx;renderModal();$('#modal').classList.add('open');document.body.style.overflow='hidden';};
+const closeModal=()=>{$('#modal').classList.remove('open');document.body.style.overflow='';$('#epop').classList.remove('open');};
+$('#mclose').addEventListener('click',closeModal);
+$('#modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+document.addEventListener('click',e=>{
+  if(e.target.closest('#editor')) return;
+  const t=e.target.closest('[data-act],[data-open]'); if(!t) return;
+  if(t.dataset.open!==undefined){openModal(+t.dataset.open);return;}
+  switch(t.dataset.act){
+    case 'toggle-follow': actions.toggleFollow(); break;
+    case 'focus-input': $('#min').focus(); break;
+    case 'plike': actions.togglePostLike(); break;
+    case 'psave': actions.togglePostSave(); break;
+    case 'clike': actions.toggleCommentLike(t.dataset.cid); break;
+  }
+});
+$('#memoji').innerHTML=ic(I.smile);
+$('#epop').innerHTML=['❤️','🙌','🔥','👏','😢','😍','😮','😂'].map(e=>`<button type="button">${e}</button>`).join('');
+$('#memoji').addEventListener('click',()=>$('#epop').classList.toggle('open'));
+$('#epop').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const inp=$('#min');inp.value+=b.textContent;inp.dispatchEvent(new Event('input'));inp.focus();});
+const min=$('#min'), mpost=$('#mpost');
+min.addEventListener('input',()=>mpost.classList.toggle('on',min.value.trim().length>0));
+const postComment=()=>{ if(actions.postComment(min.value)){min.value='';mpost.classList.remove('on');$('#epop').classList.remove('open');$('#mlist').scrollTop=0;} };
+min.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();postComment();}});
+mpost.addEventListener('click',postComment);
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  if($('#epop').classList.contains('open')){$('#epop').classList.remove('open');return;}
+  if(modalOpen()){closeModal();return;}
+  if(ui.shoot&&$('#editor').classList.contains('hidden'))SNS.openEditor();
+});
+
+SNS.init({platform:'web',hooks:{
+  renderAll, renderProfile, renderComments,
+  renderPost(){if(modalOpen())renderModal();},
+  openComments(){openModal(-1);},
+  resetView(){closeModal();}
+}});
+})();
+</script>
+</body>
+</html>

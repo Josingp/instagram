@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>SNS 촬영용 화면</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#141414;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic","Segoe UI",Roboto,sans-serif;padding:24px}
+.box{width:100%;max-width:520px}
+h1{font-size:22px;font-weight:800;margin-bottom:6px}
+p{color:#9a9a9a;font-size:14px;line-height:1.6;margin-bottom:22px}
+a.card{display:block;background:#1f1f1f;border:1px solid #2c2c2c;border-radius:14px;padding:18px 20px;color:#fff;text-decoration:none;margin-bottom:12px}
+a.card:hover{border-color:#555}
+a.card b{display:block;font-size:17px;margin-bottom:4px}
+a.card span{color:#9a9a9a;font-size:13px;line-height:1.5}
+.tip{font-size:12px;color:#777;line-height:1.7;margin-top:20px}
+code{background:#2a2a2a;padding:1px 6px;border-radius:4px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>SNS 촬영용 화면</h1>
+  <p>프로필 · 게시물 · 댓글창을 원하는 값으로 꾸며서 촬영에 쓰는 화면입니다. 사진과 설정은 클라우드에 저장되어 어느 기기에서 열어도 같습니다.</p>
+  <a class="card" href="mobile.html"><b>📱 모바일 버전</b><span>배우 폰에서 여는 화면. 프로필 → 게시물 → 댓글 시트.</span></a>
+  <a class="card" href="web.html"><b>🖥 웹 버전</b><span>노트북·데스크톱 화면. 프로필 페이지 → 게시물 모달 + 댓글.</span></a>
+  <div class="tip">
+    촬영 링크 형식: <code>/mobile?p=프리셋이름&amp;shoot=1</code> — 폰에서 열면 바로 촬영 모드로 시작합니다.<br>
+    설정으로 돌아오기: 화면 오른쪽 위 모서리 3번 탭 (웹은 Esc 키).
+  </div>
+</div>
+</body>
+</html>

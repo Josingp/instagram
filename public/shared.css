@@ -1,0 +1,80 @@
+/* shared.css — 촬영용 SNS 화면 공통 스타일 (아이콘 · 아바타 · 설정 패널) */
+:root{
+  --bg:#fff;--fg:#0f0f0f;--muted:#737373;--line:#dbdbdb;--line2:#efefef;
+  --blue:#1b7ff5;--btn:#efefef;--red:#ff3040;--link:#00376b;
+  --font:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",Pretendard,"Noto Sans KR","Malgun Gothic","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,textarea{-webkit-user-select:text;user-select:text}
+img{display:block}
+[hidden]{display:none!important}
+.ic{display:inline-flex;width:24px;height:24px;flex:none}
+.ic svg{width:100%;height:100%;display:block}
+.ic.s{width:18px;height:18px}
+.ic.vb{width:14px;height:14px}
+.av{border-radius:50%;overflow:hidden;flex:none;background:#e9e9e9}
+.av img{width:100%;height:100%;object-fit:cover}
+.av svg{width:100%;height:100%;display:block}
+.sp{flex:1}
+.tagc{color:var(--link)}
+.empty{text-align:center;color:var(--muted);padding:70px 20px;font-size:14px;line-height:1.6}
+.empty b{display:block;color:var(--fg);font-size:18px;margin-bottom:6px}
+
+/* ---- 설정 패널 ---- */
+.editor{background:#f3f4f6;display:flex;flex-direction:column;color:#111;user-select:text;-webkit-user-select:text}
+.editor.hidden{display:none}
+.ed-hd{flex:none;display:flex;align-items:center;gap:8px;padding:10px 12px;background:#fff;border-bottom:1px solid #e3e3e3}
+.ed-hd h1{font-size:15px;font-weight:700;flex:1}
+.ed-body{flex:1;overflow-y:auto;padding:12px 12px 60px;-webkit-overflow-scrolling:touch}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-bottom:12px}
+.card h2{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card h2 .live{font-size:11px;font-weight:600;color:#2563eb;margin-left:auto}
+.f{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;min-width:0}
+.f label{font-size:12px;color:#555;font-weight:600}
+.f input[type=text],.f input[type=password],.f textarea,.f select{font:inherit;font-size:14px;padding:8px 10px;border:1px solid #d4d4d8;border-radius:8px;background:#fff;width:100%;color:#111}
+body.mobile .f input[type=text],body.mobile .f input[type=password],body.mobile .f textarea,body.mobile .f select{font-size:16px;padding:9px 10px}
+.f input:focus,.f textarea:focus,.f select:focus{outline:2px solid #b9d4ff;border-color:#8fb6ff}
+.f textarea{min-height:64px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:8px;font-weight:500}
+.chk input{width:16px;height:16px;flex:none}
+body.mobile .chk{font-size:14px}
+body.mobile .chk input{width:18px;height:18px}
+.ebtn{font:inherit;font-size:13px;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid #d4d4d8;background:#fff;cursor:pointer;color:#111;text-align:center}
+.ebtn:hover{background:#f5f5f5}
+.ebtn.pri{background:#111;color:#fff;border-color:#111}.ebtn.pri:hover{background:#333}
+.ebtn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}.ebtn.blue:hover{background:#1468d8}
+.ebtn.sm{padding:6px 9px;font-size:12px}
+body.mobile .ebtn.sm{padding:7px 10px;font-size:13px}
+.ebtn.danger{color:#c62828}
+.ebtn:disabled{opacity:.35;cursor:default}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.imgpick{display:flex;align-items:center;gap:10px}
+.thumb{width:52px;height:52px;border-radius:50%;background:#eee;overflow:hidden;flex:none;border:1px solid #ddd}
+.thumb.sq{border-radius:8px}
+.thumb img,.thumb svg{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.thumbs:empty{display:none}
+.th{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;background:#eee}
+.th img{width:100%;height:100%;object-fit:cover}
+.th .ops{position:absolute;left:0;right:0;bottom:0;display:flex;background:rgba(0,0,0,.6)}
+body.web .th .ops{opacity:0;transition:opacity .15s}
+body.web .th:hover .ops{opacity:1}
+.th .ops button{flex:1;color:#fff;font-size:12px;padding:5px 0;text-align:center}
+.ccard{border:1px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:10px;background:#fafafa}
+.ct{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.ct .thumb{width:32px;height:32px}
+.ct .n{font-size:12px;font-weight:700;color:#666;flex:1}
+.hint{font-size:12px;color:#6b7280;line-height:1.5}
+kbd{font:inherit;font-size:11px;border:1px solid #cfcfcf;border-bottom-width:2px;border-radius:4px;padding:0 5px;background:#fff}
+.cl-status{font-size:12px;line-height:1.55;padding:8px 10px;border-radius:8px;background:#f1f5f9;color:#334155;margin-bottom:10px}
+.cl-status.on{background:#ecfdf5;color:#065f46}
+.cl-status.err{background:#fef2f2;color:#991b1b}
+.linkrow{display:flex;gap:6px}
+.linkrow input{flex:1;min-width:0;font-size:12px!important;color:#444}
+.fab{z-index:40;background:#111;color:#fff;border-radius:999px;padding:11px 16px;font-size:13px;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.fab.hidden{display:none}
+#toast{background:rgba(0,0,0,.84);color:#fff;padding:9px 16px;border-radius:999px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99;white-space:nowrap;max-width:92%;overflow:hidden;text-overflow:ellipsis}
+#toast.show{opacity:1}

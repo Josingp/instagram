@@ -1,0 +1,9 @@
+{
+  "name": "SNS 촬영용 화면",
+  "short_name": "SNS촬영",
+  "start_url": "./mobile",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

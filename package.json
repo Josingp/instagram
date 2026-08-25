@@ -1,0 +1,11 @@
+{
+  "name": "sns-shoot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "촬영용 SNS 프로필/댓글 화면 (웹 · 모바일) — Vercel Blob에 사진과 프리셋 저장",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@vercel/blob": "^2.8.0"
+  }
+}

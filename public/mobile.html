@@ -34,6 +34,8 @@ button{text-align:left}
 .tabbar{flex:none;display:flex;justify-content:space-around;align-items:center;height:calc(50px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);border-top:1px solid var(--line2);background:var(--bg)}
 .tabbar .ibtn .ic{width:27px;height:27px}
 .tabbar .av.on{box-shadow:0 0 0 1px #fff,0 0 0 2.5px var(--fg)}
+.tabbar.dark{background:#000;border-top-color:#222;color:#fff}
+.tabbar.dark .av.on{box-shadow:0 0 0 1px #000,0 0 0 2.5px #fff}
 
 /* 프로필 */
 .phead{display:flex;align-items:center;gap:22px;padding:10px 16px 8px}
@@ -56,13 +58,14 @@ button{text-align:left}
 .ptabs button.on{color:var(--fg);border-bottom-color:var(--fg)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;padding-bottom:8px}
 .tile{aspect-ratio:1;background:#f0f0f0;overflow:hidden}
+.grid.r34 .tile{aspect-ratio:3/4}
 .tile img{width:100%;height:100%;object-fit:cover}
 
 /* 게시물 */
 .post-h{display:flex;align-items:center;gap:10px;padding:8px 12px}
 .post-h .un{font-weight:600;font-size:14px;display:flex;align-items:center;gap:4px;min-width:0}
 .post-h .un span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.post-img{width:100%;aspect-ratio:1;background:#000;overflow:hidden}
+.post-img{width:100%;aspect-ratio:1;background:#000;overflow:hidden;position:relative}
 .post-img img,.post-img .phimg{width:100%;height:100%;object-fit:cover}
 .post-act{display:flex;align-items:center;gap:16px;padding:10px 14px 6px}
 .ab{display:flex;color:var(--fg)}
@@ -74,12 +77,46 @@ button{text-align:left}
 .post-meta .cmt{color:var(--muted);margin-top:4px;display:block}
 .post-meta .time{color:var(--muted);font-size:12px;margin-top:5px}
 
+/* 릴스 전체화면 */
+#scr-reel{background:#000;color:#fff}
+.reel-stage{position:absolute;left:0;right:0;top:0;bottom:calc(50px + env(safe-area-inset-bottom));overflow:hidden;background:#000}
+.reel-media{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.reel-media video,.reel-media img,.reel-media .phr{width:100%;height:100%;object-fit:cover}
+@keyframes slideup{from{transform:translateY(40%);opacity:.5}to{transform:none;opacity:1}}
+@keyframes slidedown{from{transform:translateY(-40%);opacity:.5}to{transform:none;opacity:1}}
+.reel-stage.up .reel-wrap{animation:slideup .28s ease-out}
+.reel-stage.down .reel-wrap{animation:slidedown .28s ease-out}
+.reel-wrap{position:absolute;inset:0}
+.reel-top{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:2px;padding:0 6px;padding-top:env(safe-area-inset-top);height:calc(46px + env(safe-area-inset-top));color:#fff;z-index:3;background:linear-gradient(rgba(0,0,0,.4),transparent)}
+.reel-top .ttl{flex:1;font-weight:700;font-size:20px;padding:0 6px;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.reel-right{position:absolute;right:8px;bottom:24px;display:flex;flex-direction:column;align-items:center;gap:18px;z-index:3}
+.rbtn{display:flex;flex-direction:column;align-items:center;gap:4px;color:#fff;font-size:12px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.rbtn .ic{width:28px;height:28px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+.rbtn.liked .ic{color:var(--red)}
+.reel-bottom{position:absolute;left:12px;right:64px;bottom:20px;z-index:3;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);font-size:14px}
+.reel-user{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.reel-user b{font-weight:600;font-size:14px}
+.reel-follow{border:1px solid rgba(255,255,255,.85);border-radius:8px;padding:5px 10px;font-size:13px;font-weight:600;color:#fff}
+.reel-cap{line-height:18px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px;word-break:break-word;white-space:pre-wrap}
+.reel-audio{display:flex;align-items:center;gap:6px;font-size:13px;white-space:nowrap;overflow:hidden}
+.reel-audio .ic{width:14px;height:14px;flex:none}
+.reel-audio span{overflow:hidden;text-overflow:ellipsis}
+.reel-views{font-size:13px;margin-top:6px;opacity:.9}
+.reel-mute{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;color:#fff;z-index:4;pointer-events:none;opacity:0;transition:opacity .2s}
+.reel-mute.show{opacity:1}
+.reel-mute .ic{width:26px;height:26px}
+.reel-bar{position:absolute;left:0;right:0;bottom:0;height:2px;background:rgba(255,255,255,.25);z-index:3}
+.reel-bar i{display:block;height:100%;width:0;background:#fff}
+@keyframes barloop{from{width:0}to{width:100%}}
+.reel-bar i.loop{animation:barloop 8s linear infinite}
+.reel-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;text-align:center;padding:40px;line-height:1.6}
+
 /* 댓글 시트 */
 .sheet{position:absolute;inset:0;z-index:30;visibility:hidden;transition:visibility 0s .32s}
 .sheet.open{visibility:visible;transition:none}
 .sheet-bd{position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .28s}
 .sheet.open .sheet-bd{background:rgba(0,0,0,.45)}
-.sheet-panel{position:absolute;left:0;right:0;bottom:0;height:88%;background:var(--bg);border-radius:18px 18px 0 0;display:flex;flex-direction:column;transform:translateY(102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);box-shadow:0 -4px 20px rgba(0,0,0,.15)}
+.sheet-panel{position:absolute;left:0;right:0;bottom:0;height:88%;background:var(--bg);border-radius:18px 18px 0 0;display:flex;flex-direction:column;transform:translateY(102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);box-shadow:0 -4px 20px rgba(0,0,0,.15);color:var(--fg)}
 .sheet.open .sheet-panel{transform:translateY(0)}
 .sheet-hd{flex:none;padding:8px 0 10px;text-align:center;border-bottom:1px solid var(--line2)}
 .sheet-hd .handle{width:38px;height:4px;border-radius:2px;background:#cdcdcd;margin:0 auto 10px}
@@ -88,6 +125,7 @@ button{text-align:left}
 .clist{flex:1;overflow-y:auto;padding:6px 0 10px;overscroll-behavior:contain}
 .crow{display:flex;gap:12px;padding:9px 16px;align-items:flex-start}
 .crow.caption{border-bottom:1px solid var(--line2);padding-bottom:14px;margin-bottom:4px}
+.crow.reply{padding-left:58px;padding-top:6px;padding-bottom:6px}
 .crow .body{flex:1;min-width:0;font-size:14px;line-height:18px}
 .crow .un{font-weight:600;font-size:13px;display:flex;align-items:center;gap:4px}
 .crow .un .time{color:var(--muted);font-weight:400;font-size:12px;margin-left:2px}
@@ -101,11 +139,18 @@ button{text-align:left}
 .cinput{flex:none;border-top:1px solid var(--line2);padding:6px 12px;padding-bottom:calc(8px + env(safe-area-inset-bottom));background:var(--bg)}
 .emojis{display:flex;justify-content:space-around;font-size:22px;padding:4px 0 10px}
 .emojis button{padding:2px 4px}
+.cmode{display:none;align-items:center;justify-content:space-between;background:#f1f2f4;border-radius:14px 14px 0 0;padding:9px 14px 8px;font-size:12px;color:#555;margin-left:42px}
+.cmode.on{display:flex}
+.cmode button{color:#333;display:flex;padding:0}
+.cmode .ic{width:16px;height:16px}
 .cinput .row{display:flex;align-items:center;gap:10px}
-.cinput input{flex:1;min-width:0;font:inherit;font-size:16px;border:0;outline:0;background:transparent;color:var(--fg)}
-.cinput input::placeholder{color:#9a9a9a}
-.cinput .pbtn{color:var(--blue);font-weight:600;font-size:14px;opacity:.35;flex:none}
-.cinput .pbtn.on{opacity:1}
+.composer{flex:1;display:flex;align-items:center;gap:6px;border:1px solid #d9d9d9;border-radius:24px;padding:3px 4px 3px 14px;min-height:44px;background:#fff}
+.cmode.on+.row .composer{border-radius:0 0 22px 22px;border-top-color:#eee}
+.composer input{flex:1;min-width:0;font:inherit;font-size:16px;border:0;outline:0;background:transparent;color:var(--fg)}
+.composer input::placeholder{color:#9a9a9a}
+.sendbtn{width:36px;height:36px;border-radius:12px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;transform:scale(0);opacity:0;transition:transform .2s cubic-bezier(.2,.9,.3,1.4),opacity .15s}
+.sendbtn.on{transform:scale(1);opacity:1}
+.sendbtn .ic{width:20px;height:20px}
 
 /* 설정 위치 */
 #phone .editor{position:absolute;inset:0;z-index:50}
@@ -125,7 +170,7 @@ button{text-align:left}
       <section class="pinfo" id="p-info"></section>
       <section class="pbtns" id="p-btns"></section>
       <nav class="ptabs" id="p-tabs"></nav>
-      <div class="grid" id="p-grid"></div>
+      <div id="p-body"></div>
     </div>
     <nav class="tabbar" id="p-tabbar"></nav>
   </div>
@@ -139,17 +184,31 @@ button{text-align:left}
     <nav class="tabbar" id="post-tabbar"></nav>
   </div>
 
+  <div class="screen hidden" id="scr-reel">
+    <div class="reel-stage" id="reel-stage"></div>
+    <header class="reel-top">
+      <button class="ibtn" data-act="back-reel" id="reel-back"></button>
+      <div class="ttl" id="reel-title"></div>
+      <button class="ibtn" id="reel-cam"></button>
+    </header>
+    <div class="reel-mute" id="reel-mute"></div>
+    <nav class="tabbar dark" id="reel-tabbar" style="position:absolute;left:0;right:0;bottom:0"></nav>
+  </div>
+
   <div class="sheet" id="sheet">
     <div class="sheet-bd" id="sheet-bd"></div>
     <div class="sheet-panel" id="sheet-panel">
       <div class="sheet-hd" id="sheet-hd"><div class="handle"></div><div class="t">댓글 <small id="sheet-count"></small></div></div>
       <div class="clist" id="clist"></div>
-      <div class="cinput">
+      <div class="cinput" id="cinput">
         <div class="emojis" id="emojis"></div>
+        <div class="cmode" id="cmode"><span id="cmode-text"></span><button type="button" id="cmode-x"></button></div>
         <div class="row">
           <div id="cin-av"></div>
-          <input id="cin" type="text" autocomplete="off" placeholder="댓글 달기...">
-          <button class="pbtn" id="cpost">게시</button>
+          <div class="composer">
+            <input id="cin" type="text" autocomplete="off" placeholder="댓글 달기...">
+            <button class="sendbtn" id="cpost" type="button"></button>
+          </div>
         </div>
       </div>
     </div>
@@ -165,8 +224,9 @@ button{text-align:left}
 <script>
 (function(){
 'use strict';
-const {$, esc, linkify, I, ic, vb, av, phGrad, S, ui, cnt, actions}=SNS;
+const {$, esc, linkify, I, ic, vb, av, phGrad, phGradDark, S, ui, cnt, actions}=SNS;
 
+/* ---------- 프로필 ---------- */
 function renderProfile(){
   const p=S.profile, ver=p.verified?vb:'';
   $('#p-top').innerHTML=p.kind==='self'
@@ -177,23 +237,38 @@ function renderProfile(){
   $('#p-btns').innerHTML=p.kind==='self'
     ?`<button class="btn">프로필 편집</button><button class="btn">프로필 공유</button><button class="btn icon">${ic(I.personAdd)}</button>`
     :`${p.follow==='following'?`<button class="btn" data-act="toggle-follow">팔로잉 ${ic(I.chev)}</button>`:`<button class="btn primary" data-act="toggle-follow">팔로우</button>`}<button class="btn">메시지</button><button class="btn icon">${ic(I.personAdd)}</button>`;
-  $('#p-tabs').innerHTML=`<button class="on">${ic(I.grid)}</button><button>${ic(I.play)}</button><button>${ic(I.tag)}</button>`;
-  let tiles='';
-  if(!S.feed.length){ for(let i=0;i<12;i++) tiles+=`<div class="tile" style="background:${phGrad(i)}" data-open="-1"></div>`; }
-  else{ const n=p.fillGrid?Math.max(S.feed.length,12):S.feed.length; for(let i=0;i<n;i++){const k=i%S.feed.length;tiles+=`<div class="tile" data-open="${k}"><img src="${S.feed[k]}" alt=""></div>`;} }
-  $('#p-grid').innerHTML=tiles;
+  $('#p-tabs').innerHTML=`<button class="${ui.tab==='posts'?'on':''}" data-tab="posts">${ic(I.grid)}</button><button class="${ui.tab==='reels'?'on':''}" data-tab="reels">${ic(I.play)}</button><button class="${ui.tab==='tagged'?'on':''}" data-tab="tagged">${ic(I.tag)}</button>`;
+  let body='';
+  if(ui.tab==='posts'){
+    let tiles='';
+    if(!S.feed.length){ for(let i=0;i<12;i++) tiles+=`<div class="tile" style="background:${phGrad(i)}" data-open="-1"></div>`; }
+    else{ const n=p.fillGrid?Math.max(S.feed.length,12):S.feed.length; for(let i=0;i<n;i++){const k=i%S.feed.length;tiles+=`<div class="tile" data-open="${k}"><img src="${S.feed[k]}" alt=""></div>`;} }
+    body=`<div class="grid ${p.gridRatio==='3:4'?'r34':''}">${tiles}</div>`;
+  }else if(ui.tab==='reels'){
+    body=S.reels.length
+      ?`<div class="rgrid">${S.reels.map((r,i)=>`<div class="rtile" data-reel="${i}">${r.cover?`<img src="${r.cover}" alt="">`:`<div class="phr" style="background:${phGradDark(i)}"></div>`}<div class="views">${ic(I.playSolid)}<span>${esc(r.views)}</span></div></div>`).join('')}</div>`
+      :`<div class="empty-tab"><b>${esc(S.app.reelsLabel||'릴스')} 없음</b>설정에서 릴스를 추가하면 여기에 표시됩니다.</div>`;
+  }else body=`<div class="empty-tab"><b>사진 및 동영상</b>회원님이 태그된 사진과 동영상이 여기에 표시됩니다.</div>`;
+  $('#p-body').innerHTML=body;
   document.title=(p.name?p.name+' ':'')+'(@'+p.username+')';
-  const self=p.kind==='self', me=self?p.avatar:S.viewer.avatar;
-  const tab=`<button class="ibtn">${ic(I.home)}</button><button class="ibtn">${ic(I.search)}</button><button class="ibtn">${ic(I.plus)}</button><button class="ibtn">${ic(I.play)}</button><button class="ibtn">${av(me,26,self?'on':'')}</button>`;
-  $('#p-tabbar').innerHTML=tab; $('#post-tabbar').innerHTML=tab;
+  renderTabbars();
 }
-function renderPost(){
+function renderTabbars(){
+  const p=S.profile, self=p.kind==='self', me=self?p.avatar:S.viewer.avatar;
+  const tab=`<button class="ibtn">${ic(I.home)}</button><button class="ibtn">${ic(I.search)}</button><button class="ibtn">${ic(I.plus)}</button><button class="ibtn" data-act="reels-home">${ic(I.play)}</button><button class="ibtn">${av(me,26,self?'on':'')}</button>`;
+  $('#p-tabbar').innerHTML=tab; $('#post-tabbar').innerHTML=tab; $('#reel-tabbar').innerHTML=tab;
+}
+
+/* ---------- 게시물 ---------- */
+function renderPost(opts={}){
   const p=S.profile, po=S.post, img=actions.currentPostImage(), ver=p.verified?vb:'';
-  $('#post-scroll').innerHTML=`
+  const pop=ui.animLike?'pop':''; ui.animLike=false;
+  const sc=$('#post-scroll'), st=sc.scrollTop;
+  sc.innerHTML=`
     <div class="post-h">${av(p.avatar,32)}<div class="un"><span>${esc(p.username)}</span>${ver}</div><span class="sp"></span><button class="ibtn">${ic(I.more)}</button></div>
-    <div class="post-img">${img?`<img src="${img}" alt="">`:`<div class="phimg" style="background:${phGrad(ui.postIndex)}"></div>`}</div>
+    <div class="post-img" id="post-img">${img?`<img src="${img}" alt="">`:`<div class="phimg" style="background:${phGrad(ui.postIndex)}"></div>`}${opts.bigHeart?`<div class="bigheart">${ic(I.heart(true))}</div>`:''}</div>
     <div class="post-act">
-      <button class="ab ${po.liked?'liked':''}" data-act="plike">${ic(I.heart(po.liked))}</button>
+      <button class="ab ${po.liked?'liked':''} ${pop}" data-act="plike">${ic(I.heart(po.liked))}</button>
       <button class="ab" data-act="open-sheet">${ic(I.comment)}</button>
       <button class="ab">${ic(I.send)}</button>
       <span class="sp"></span>
@@ -205,43 +280,126 @@ function renderPost(){
       ${cnt(po.commentCount)?`<button class="cmt" data-act="open-sheet">댓글 ${cnt(po.commentCount)}개 모두 보기</button>`:''}
       ${po.time?`<div class="time">${esc(po.time)}</div>`:''}
     </div>`;
+  sc.scrollTop=st;
+  SNS.doubleTap($('#post-img'),()=>actions.togglePostLike({onlyLike:true}));
 }
-function renderComments(){
-  const p=S.profile, po=S.post, list=$('#clist'), st=list.scrollTop;
-  $('#sheet-count').textContent=cnt(po.commentCount)?String(po.commentCount).trim():'';
-  const cap=po.caption?`<div class="crow caption">${av(p.avatar,32)}<div class="body"><div class="un"><span>${esc(p.username)}</span>${p.verified?vb:''}<span class="time">${esc(po.time)}</span></div><div class="txt">${linkify(po.caption)}</div></div></div>`:'';
-  const rows=S.comments.map(c=>`
-    <div class="crow" data-cid="${c.id}">${av(c.avatar,32)}
+
+/* ---------- 릴스 ---------- */
+let reelAnim='';
+function renderReel(opts={}){
+  const stage=$('#reel-stage'), r=actions.currentReel(), p=S.profile;
+  $('#reel-title').textContent=S.app.reelsLabel||'릴스';
+  if(!r){ stage.innerHTML='<div class="reel-empty">설정에서 릴스를 추가하세요.</div>'; return; }
+  const pop=ui.animLike?'pop':''; ui.animLike=false;
+  const media=r.video?`<video src="${r.video}" playsinline loop autoplay ${ui.reelMuted?'muted':''} preload="auto"></video>`:(r.cover?`<img src="${r.cover}" alt="">`:`<div class="phr" style="background:${phGradDark(ui.reelIndex)}"></div>`);
+  stage.className='reel-stage '+reelAnim; reelAnim='';
+  stage.innerHTML=`<div class="reel-wrap">
+    <div class="reel-media" id="reel-media">${media}</div>
+    ${opts.bigHeart?`<div class="bigheart">${ic(I.heart(true))}</div>`:''}
+    <div class="reel-right">
+      <button class="rbtn ${r.liked?'liked':''} ${pop}" data-act="rlike">${ic(I.heart(r.liked))}<span>${cnt(r.likes)}</span></button>
+      <button class="rbtn" data-act="open-sheet-reel">${ic(I.comment)}<span>${cnt(r.comments)}</span></button>
+      <button class="rbtn">${ic(I.send)}</button>
+      <button class="rbtn">${ic(I.moreV)}</button>
+    </div>
+    <div class="reel-bottom">
+      <div class="reel-user">${av(p.avatar,30)}<b>${esc(p.username)}</b>${p.verified?vb:''}${p.kind==='other'?`<button class="reel-follow" data-act="toggle-follow">${p.follow==='following'?'팔로잉':'팔로우'}</button>`:''}</div>
+      ${r.caption?`<div class="reel-cap">${linkify(r.caption)}</div>`:''}
+      ${r.audio?`<div class="reel-audio">${ic(I.music)}<span>${esc(r.audio)}</span></div>`:''}
+      ${p.showReelViews&&r.views?`<div class="reel-views">조회 ${esc(r.views)}회</div>`:''}
+    </div>
+    <div class="reel-bar"><i id="reel-prog" class="${r.video?'':'loop'}"></i></div>
+  </div>`;
+  const v=$('#reel-media video');
+  if(v){
+    v.muted=ui.reelMuted;
+    const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>{ v.muted=true; ui.reelMuted=true; v.play().catch(()=>{}); });
+    v.addEventListener('timeupdate',()=>{ const b=$('#reel-prog'); if(b&&v.duration) b.style.width=(v.currentTime/v.duration*100)+'%'; });
+  }
+  SNS.doubleTap($('#reel-media'),()=>actions.toggleReelLike({onlyLike:true}),()=>toggleMute());
+}
+function toggleMute(){
+  const v=$('#reel-media video'); ui.reelMuted=!ui.reelMuted; if(v){ v.muted=ui.reelMuted; if(!ui.reelMuted) v.play().catch(()=>{}); }
+  const m=$('#reel-mute'); m.innerHTML=ic(ui.reelMuted?I.mute:I.sound); m.classList.add('show'); clearTimeout(toggleMute.t); toggleMute.t=setTimeout(()=>m.classList.remove('show'),700);
+}
+function openReel(i){ ui.reelIndex=Math.max(0,Math.min(i,S.reels.length-1)); renderReel(); showScreen('reel'); }
+function stepReel(d){ const n=ui.reelIndex+d; if(n<0||n>=S.reels.length) return; ui.reelIndex=n; reelAnim=d>0?'up':'down'; renderReel(); }
+(function(){ const st=$('#scr-reel'); let y0=null,x0=null;
+  st.addEventListener('touchstart',e=>{ if(e.target.closest('button')) return; y0=e.touches[0].clientY; x0=e.touches[0].clientX; },{passive:true});
+  st.addEventListener('touchend',e=>{ if(y0==null) return; const dy=e.changedTouches[0].clientY-y0, dx=e.changedTouches[0].clientX-x0; y0=null; if(Math.abs(dy)>70&&Math.abs(dy)>Math.abs(dx)*1.5) stepReel(dy<0?1:-1); });
+})();
+$('#reel-back').innerHTML=ic(I.back); $('#reel-cam').innerHTML=ic(I.camera);
+
+/* ---------- 댓글 ---------- */
+function commentRow(c,{reply=false}={}){
+  const cls=['crow',reply?'reply':'',ui.animNew===c.id?'new flash':'',ui.animFlash===c.id?'flash':''].join(' ');
+  const pop=ui.animCid===c.id?'pop':'';
+  return `<div class="${cls}" data-cid="${c.id}">${av(c.avatar,reply?24:32)}
       <div class="body">
         <div class="un"><span>${esc(c.username)}</span>${c.verified?vb:''}<span class="time">${esc(c.time)}</span></div>
         <div class="txt">${linkify(c.text)}</div>
-        <div class="meta"><span>답글 달기</span></div>
-        ${c.replies?`<div class="replies">답글 ${esc(c.replies)}개 보기</div>`:''}
+        <div class="meta"><button type="button" data-act="reply" data-cid="${c.id}">답글 달기</button></div>
       </div>
-      <button class="hcol ${c.liked?'liked':''}" data-act="clike" data-cid="${c.id}">${ic(I.heart(c.liked))}<span>${cnt(c.likes)}</span></button>
-    </div>`).join('');
+      <button class="hcol ${c.liked?'liked':''} ${pop}" data-act="clike" data-cid="${c.id}">${ic(I.heart(c.liked))}<span>${cnt(c.likes)}</span></button>
+    </div>`;
+}
+function renderComments(){
+  const p=S.profile, po=S.post, list=$('#clist'), st=list.scrollTop;
+  const forReel=ui.commentsFor==='reel'&&actions.currentReel();
+  const count=forReel?actions.currentReel().comments:po.commentCount;
+  $('#sheet-count').textContent=cnt(count)?String(count).trim():'';
+  const capText=forReel?actions.currentReel().caption:po.caption, capTime=forReel?'':po.time;
+  const cap=capText?`<div class="crow caption">${av(p.avatar,32)}<div class="body"><div class="un"><span>${esc(p.username)}</span>${p.verified?vb:''}${capTime?`<span class="time">${esc(capTime)}</span>`:''}</div><div class="txt">${linkify(capText)}</div></div></div>`:'';
+  const rows=actions.commentTree().map(({c,children})=>{
+    let h=commentRow(c);
+    const n=children.length;
+    if(n){ const open=ui.expanded.has(c.id); h+=`<div class="crow reply" style="padding:0 0 0 58px;margin-top:-4px"><div class="body"><div class="replies" style="margin:0 0 8px"><button type="button" data-act="toggle-replies" data-cid="${c.id}">${open?'답글 숨기기':`답글 ${n}개 보기`}</button></div></div></div>`; if(open) h+=children.map(k=>commentRow(k,{reply:true})).join(''); }
+    else if(c.replies) h+=`<div class="crow reply" style="padding:0 0 0 58px;margin-top:-4px"><div class="body"><div class="replies" style="margin:0 0 8px"><button type="button">답글 ${esc(c.replies)}개 보기</button></div></div></div>`;
+    return h;
+  }).join('');
   list.innerHTML=cap+(rows||'<div class="empty"><b>아직 댓글이 없습니다.</b>대화를 시작해보세요.</div>');
   list.scrollTop=st;
   $('#cin-av').innerHTML=av(S.viewer.avatar,32);
   $('#cin').placeholder=`${S.viewer.username||'user'}(으)로 댓글 달기...`;
 }
-function renderAll(){renderProfile();renderPost();renderComments();}
+function renderComposer(o={}){
+  const m=ui.cmode, bar=$('#cmode');
+  bar.classList.toggle('on',!!m);
+  $('#cmode-text').textContent=m?(m.type==='edit'?'댓글 수정 중':`@${m.username}님에게 답글 남기는 중`):'';
+  $('#cmode-x').innerHTML=ic(I.close);
+  $('#cpost').innerHTML=ic(m&&m.type==='edit'?I.check:I.arrowUp);
+  const cin=$('#cin');
+  if(typeof o.text==='string') cin.value=o.text;
+  $('#cpost').classList.toggle('on',cin.value.trim().length>0);
+  if(o.focus){ cin.focus(); try{ cin.setSelectionRange(cin.value.length,cin.value.length); }catch(e){} }
+}
+function renderAll(){renderProfile();renderPost();renderComments();renderComposer();if(!$('#scr-reel').classList.contains('hidden'))renderReel();}
 
-const showScreen=n=>{$('#scr-profile').classList.toggle('hidden',n!=='profile');$('#scr-post').classList.toggle('hidden',n!=='post');if(n==='profile')closeSheet();};
-const openSheet=()=>$('#sheet').classList.add('open');
-const closeSheet=()=>{$('#sheet').classList.remove('open');$('#cin').blur();};
+/* ---------- 화면 전환 · 시트 ---------- */
+const showScreen=n=>{ for(const k of ['profile','post','reel']) $('#scr-'+k).classList.toggle('hidden',n!==k); if(n!=='reel'){ const v=$('#reel-media video'); v&&v.pause(); } if(n==='profile') closeSheet(); };
+const openSheet=kind=>{ ui.commentsFor=kind||'post'; ui.cmode=null; renderComments(); renderComposer({text:''}); $('#sheet').classList.add('open'); };
+const closeSheet=()=>{ $('#sheet').classList.remove('open'); $('#cin').blur(); if(ui.cmode){ ui.cmode=null; renderComposer({text:''}); } };
 
 $('#phone').addEventListener('click',e=>{
   if(e.target.closest('#editor')) return;
-  const t=e.target.closest('[data-act],[data-open]'); if(!t) return;
-  if(t.dataset.open!==undefined){ui.postIndex=+t.dataset.open;renderPost();showScreen('post');return;}
+  if(ui.suppressClick&&Date.now()-ui.suppressClick<600){ ui.suppressClick=0; e.preventDefault(); return; }
+  const tab=e.target.closest('[data-tab]'); if(tab){ actions.setTab(tab.dataset.tab); return; }
+  const t=e.target.closest('[data-act],[data-open],[data-reel]'); if(!t) return;
+  if(t.dataset.open!==undefined){ ui.postIndex=+t.dataset.open; renderPost(); showScreen('post'); return; }
+  if(t.dataset.reel!==undefined){ openReel(+t.dataset.reel); return; }
   switch(t.dataset.act){
     case 'back': showScreen('profile'); break;
+    case 'back-reel': showScreen('profile'); break;
+    case 'reels-home': if(S.reels.length) openReel(ui.reelIndex); else SNS.toast('설정에서 릴스를 먼저 추가하세요'); break;
     case 'toggle-follow': actions.toggleFollow(); break;
-    case 'open-sheet': openSheet(); break;
+    case 'open-sheet': openSheet('post'); break;
+    case 'open-sheet-reel': openSheet('reel'); break;
     case 'plike': actions.togglePostLike(); break;
     case 'psave': actions.togglePostSave(); break;
+    case 'rlike': actions.toggleReelLike(); break;
     case 'clike': actions.toggleCommentLike(t.dataset.cid); break;
+    case 'reply': actions.beginReply(t.dataset.cid); break;
+    case 'toggle-replies': actions.toggleReplies(t.dataset.cid); break;
   }
 });
 $('#sheet-bd').addEventListener('click',closeSheet);
@@ -251,19 +409,21 @@ $('#sheet-bd').addEventListener('click',closeSheet);
   hd.addEventListener('touchmove',e=>{if(y0==null)return;const dy=e.touches[0].clientY-y0;if(dy>0)panel.style.transform=`translateY(${dy}px)`;},{passive:true});
   hd.addEventListener('touchend',e=>{if(y0==null)return;const dy=e.changedTouches[0].clientY-y0;panel.style.transition='';panel.style.transform='';if(dy>90)closeSheet();y0=null;});
 })();
+SNS.longPress($('#clist'),'.crow:not(.caption)',row=>{ if(row.dataset.cid) actions.beginEdit(row.dataset.cid); });
 $('#post-back').innerHTML=ic(I.back);
 $('#emojis').innerHTML=['❤️','🙌','🔥','👏','😢','😍','😮','😂'].map(e=>`<button type="button">${e}</button>`).join('');
 $('#emojis').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const cin=$('#cin');cin.value+=b.textContent;cin.dispatchEvent(new Event('input'));cin.focus();});
 const cin=$('#cin'), cpost=$('#cpost');
 cin.addEventListener('input',()=>cpost.classList.toggle('on',cin.value.trim().length>0));
-const postComment=()=>{ if(actions.postComment(cin.value)){cin.value='';cpost.classList.remove('on');$('#clist').scrollTop=0;} };
+const postComment=()=>{ const r=actions.postComment(cin.value); if(r&&!r.parentId&&ui.cmode===null){ const list=$('#clist'); const cap=list.querySelector('.crow.caption'); list.scrollTop=cap?cap.offsetHeight:0; } };
 cin.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();postComment();}});
 cpost.addEventListener('click',postComment);
+$('#cmode-x').addEventListener('click',()=>actions.cancelMode());
 
 SNS.init({platform:'mobile',hooks:{
-  renderAll, renderProfile, renderPost, renderComments,
+  renderAll, renderProfile, renderPost, renderComments, renderComposer, renderReel,
   openPost(){ui.postIndex=-1;renderPost();showScreen('post');},
-  openComments(){ui.postIndex=-1;renderPost();showScreen('post');setTimeout(openSheet,60);},
+  openComments(){ui.postIndex=-1;renderPost();showScreen('post');setTimeout(()=>openSheet('post'),60);},
   resetView(){showScreen('profile');}
 }});
 

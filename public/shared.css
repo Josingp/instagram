@@ -78,3 +78,27 @@ kbd{font:inherit;font-size:11px;border:1px solid #cfcfcf;border-bottom-width:2px
 .fab.hidden{display:none}
 #toast{background:rgba(0,0,0,.84);color:#fff;padding:9px 16px;border-radius:999px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99;white-space:nowrap;max-width:92%;overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1}
+
+/* ---- 촬영 중 애니메이션 ---- */
+@keyframes heartpop{0%{transform:scale(0);opacity:0}15%{transform:scale(1.25);opacity:.95}30%{transform:scale(.95)}45%,78%{transform:scale(1);opacity:.95}100%{transform:scale(1);opacity:0}}
+.bigheart{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5}
+.bigheart .ic{width:96px;height:96px;color:#fff;filter:drop-shadow(0 6px 16px rgba(0,0,0,.35));animation:heartpop .95s ease-out forwards}
+@keyframes heartbounce{0%{transform:scale(1)}25%{transform:scale(1.35)}50%{transform:scale(.88)}75%{transform:scale(1.1)}100%{transform:scale(1)}}
+.pop>.ic{animation:heartbounce .5s ease}
+@keyframes cmt-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes cmt-flash{0%{background:#e8f1ff}100%{background:transparent}}
+.crow.new{animation:cmt-in .35s ease-out}
+.crow.flash{animation:cmt-flash 1.5s ease-out}
+.crow .meta button,.crow .replies button{color:inherit;font:inherit;font-weight:600;padding:0}
+
+/* ---- 릴스 그리드 ---- */
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;padding-bottom:8px}
+.rtile{aspect-ratio:9/16;position:relative;overflow:hidden;background:#111;cursor:pointer}
+.rtile img,.rtile .phr{width:100%;height:100%;object-fit:cover}
+.rtile:after{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(to top,rgba(0,0,0,.5),transparent);pointer-events:none}
+.rtile .views{position:absolute;left:6px;bottom:6px;display:flex;align-items:center;gap:3px;color:#fff;font-size:12px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.6);z-index:1}
+.rtile .views .ic{width:14px;height:14px}
+.thumb.rt{border-radius:6px;width:36px;height:52px}
+.thumb.rt .phr{width:100%;height:100%}
+.empty-tab{text-align:center;padding:48px 24px;color:var(--muted);font-size:14px;line-height:1.6}
+.empty-tab b{display:block;font-size:20px;color:var(--fg);margin-bottom:6px}

@@ -61,7 +61,10 @@ body.edit-on{padding-right:var(--ed)}
 .ptabs .ic{width:12px;height:12px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding-bottom:48px}
 .tile{aspect-ratio:1;overflow:hidden;background:#f0f0f0;cursor:pointer}
+.grid.r34 .tile{aspect-ratio:3/4}
 .tile img{width:100%;height:100%;object-fit:cover}
+.rgrid{gap:4px;padding-bottom:48px}
+.empty-tab{padding:80px 24px}
 
 /* 게시물 모달 */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:80}
@@ -69,24 +72,28 @@ body.edit-on{padding-right:var(--ed)}
 body.edit-on .modal{right:var(--ed)}
 .mclose{position:absolute;top:12px;right:16px;color:#fff;font-size:38px;line-height:1;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-weight:300}
 .mbox{--mh:min(880px,calc(100vh - 64px));display:flex;height:var(--mh);width:min(calc(var(--mh) + 500px),calc(100% - 128px));background:#fff;border-radius:4px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
-.mimg{flex:1;min-width:280px;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.mimg img{width:100%;height:100%;object-fit:contain}
-.mimg .phimg{width:100%;height:100%}
+.mimg{flex:1;min-width:280px;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.mimg img,.mimg video{width:100%;height:100%;object-fit:contain}
+.mimg .phimg,.mimg .phr{width:100%;height:100%}
+.mimg .mute{position:absolute;right:14px;bottom:14px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center}
+.mimg .mute .ic{width:16px;height:16px}
 .mside{width:500px;flex:none;display:flex;flex-direction:column;border-left:1px solid var(--line2);min-width:0}
 @media (max-width:1100px){.mside{width:380px}}
 .mhd{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line2)}
 .mhd .un2{font-weight:600;font-size:14px;display:flex;align-items:center;gap:4px;flex:1;min-width:0}
 .mhd .un2 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mhd .btn{height:28px;padding:0 12px;font-size:13px}
 .mlist{flex:1;overflow-y:auto;padding:16px 16px 8px}
-.crow{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+.crow{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;padding:2px 4px;margin-left:-4px;margin-right:-4px;border-radius:6px}
 .crow.caption{margin-bottom:22px}
+.crow.reply{margin-left:42px}
 .crow .body{flex:1;min-width:0;font-size:14px;line-height:18px}
 .crow .t b{font-weight:600;margin-right:5px}
 .crow .t .ic.vb{width:14px;height:14px;vertical-align:-2px;margin-right:5px}
 .crow .txt{white-space:pre-wrap;word-break:break-word}
 .crow .meta{display:flex;gap:12px;color:var(--muted);font-size:12px;margin-top:8px}
 .crow .meta .b{font-weight:600}
-.crow .replies{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;font-weight:600;margin-top:14px}
+.crow .replies{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;font-weight:600;margin:-6px 0 16px 46px}
 .crow .replies:before{content:"";width:24px;height:1px;background:#bbb}
 .hbtn{flex:none;padding-top:8px;color:var(--muted)}
 .hbtn .ic{width:12px;height:12px}
@@ -98,6 +105,10 @@ body.edit-on .modal{right:var(--ed)}
 .ab.liked,.ab.liked:hover{color:var(--red)}
 .mlikes{font-weight:600;font-size:14px;padding:0 16px;min-height:18px}
 .mtime{font-size:12px;color:var(--muted);padding:6px 16px 12px}
+.mmode{display:none;align-items:center;justify-content:space-between;background:#f1f2f4;padding:8px 16px;font-size:12px;color:#555;border-top:1px solid var(--line2)}
+.mmode.on{display:flex}
+.mmode button{display:flex;color:#333}
+.mmode .ic{width:16px;height:16px}
 .minput{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line2);padding:8px 16px;position:relative}
 .minput input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:14px;color:var(--fg);background:transparent}
 .minput input::placeholder{color:#9a9a9a}
@@ -135,7 +146,7 @@ body.edit-on .fab{display:none}
         </section>
       </header>
       <nav class="ptabs" id="p-tabs"></nav>
-      <div class="grid" id="p-grid"></div>
+      <div id="p-body"></div>
     </div>
   </main>
 </div>
@@ -151,6 +162,7 @@ body.edit-on .fab{display:none}
         <div class="macts" id="macts"></div>
         <div class="mlikes" id="mlikes"></div>
         <div class="mtime" id="mtime"></div>
+        <div class="mmode" id="mmode"><span id="mmode-text"></span><button type="button" id="mmode-x"></button></div>
         <div class="minput">
           <div class="epop" id="epop"></div>
           <button class="ibtn" id="memoji" aria-label="이모지"></button>
@@ -171,9 +183,10 @@ body.edit-on .fab{display:none}
 <script>
 (function(){
 'use strict';
-const {$, esc, linkify, I, ic, vb, av, phGrad, S, ui, cnt, actions}=SNS;
+const {$, esc, linkify, I, ic, vb, av, phGrad, phGradDark, S, ui, cnt, actions}=SNS;
 const NAV=[['home','홈'],['search','검색'],['compass','탐색 탭'],['play','동영상'],['send','메시지'],['bell','알림'],['plus','만들기']];
 const modalOpen=()=>$('#modal').classList.contains('open');
+let modalKind='post';
 
 function renderProfile(){
   const p=S.profile, ver=p.verified?vb:'', self=p.kind==='self', me=self?p.avatar:S.viewer.avatar, name=S.app.name||'';
@@ -187,75 +200,123 @@ function renderProfile(){
   $('#ph-row1').innerHTML=`<h2 class="un"><span>${esc(p.username)}</span>${ver}</h2>${btns}`;
   $('#ph-stats').innerHTML=`<li>게시물 <b>${esc(p.posts)}</b></li><li>팔로워 <b>${esc(p.followers)}</b></li><li>팔로잉 <b>${esc(p.following)}</b></li>`;
   $('#ph-bio').innerHTML=`${p.name?`<div class="nm">${esc(p.name)}</div>`:''}${p.bio?`<div class="bio">${linkify(p.bio)}</div>`:''}${p.link?`<a class="plink">${ic(I.link)}<span>${esc(p.link)}</span></a>`:''}`;
-  $('#p-tabs').innerHTML=`<button class="on">${ic(I.grid)}게시물</button><button>${ic(I.play)}동영상</button><button>${ic(I.tag)}태그됨</button>`;
-  let tiles='';
-  if(!S.feed.length){ for(let i=0;i<12;i++) tiles+=`<div class="tile" style="background:${phGrad(i)}" data-open="-1"></div>`; }
-  else{ const n=p.fillGrid?Math.max(S.feed.length,12):S.feed.length; for(let i=0;i<n;i++){const k=i%S.feed.length;tiles+=`<div class="tile" data-open="${k}"><img src="${S.feed[k]}" alt=""></div>`;} }
-  $('#p-grid').innerHTML=tiles;
+  $('#p-tabs').innerHTML=`<button class="${ui.tab==='posts'?'on':''}" data-tab="posts">${ic(I.grid)}게시물</button><button class="${ui.tab==='reels'?'on':''}" data-tab="reels">${ic(I.play)}${esc(S.app.reelsLabel||'릴스')}</button><button class="${ui.tab==='tagged'?'on':''}" data-tab="tagged">${ic(I.tag)}태그됨</button>`;
+  let body='';
+  if(ui.tab==='posts'){
+    let tiles='';
+    if(!S.feed.length){ for(let i=0;i<12;i++) tiles+=`<div class="tile" style="background:${phGrad(i)}" data-open="-1"></div>`; }
+    else{ const n=p.fillGrid?Math.max(S.feed.length,12):S.feed.length; for(let i=0;i<n;i++){const k=i%S.feed.length;tiles+=`<div class="tile" data-open="${k}"><img src="${S.feed[k]}" alt=""></div>`;} }
+    body=`<div class="grid ${p.gridRatio==='3:4'?'r34':''}">${tiles}</div>`;
+  }else if(ui.tab==='reels'){
+    body=S.reels.length
+      ?`<div class="rgrid">${S.reels.map((r,i)=>`<div class="rtile" data-reel="${i}">${r.cover?`<img src="${r.cover}" alt="">`:`<div class="phr" style="background:${phGradDark(i)}"></div>`}<div class="views">${ic(I.playSolid)}<span>${esc(r.views)}</span></div></div>`).join('')}</div>`
+      :`<div class="empty-tab"><b>${esc(S.app.reelsLabel||'릴스')} 없음</b>설정에서 릴스를 추가하면 여기에 표시됩니다.</div>`;
+  }else body=`<div class="empty-tab"><b>사진 및 동영상</b>회원님이 태그된 사진과 동영상이 여기에 표시됩니다.</div>`;
+  $('#p-body').innerHTML=body;
   document.title=(p.name?p.name+' ':'')+'(@'+p.username+')'+(name?' • '+name:'');
 }
-function renderModal(){
-  const p=S.profile, po=S.post, img=actions.currentPostImage(), ver=p.verified?vb:'';
-  $('#mimg').innerHTML=img?`<img src="${img}" alt="">`:`<div class="phimg" style="background:${phGrad(ui.postIndex)}"></div>`;
-  $('#mhd').innerHTML=`${av(p.avatar,32)}<div class="un2"><span>${esc(p.username)}</span>${ver}</div><button class="ibtn">${ic(I.more)}</button>`;
-  $('#macts').innerHTML=`<button class="ab ${po.liked?'liked':''}" data-act="plike">${ic(I.heart(po.liked))}</button><button class="ab" data-act="focus-input">${ic(I.comment)}</button><button class="ab">${ic(I.send)}</button><span class="sp"></span><button class="ab" data-act="psave">${ic(I.bookmark(po.saved))}</button>`;
-  $('#mlikes').textContent=cnt(po.likes)?`좋아요 ${String(po.likes).trim()}개`:'';
-  $('#mtime').textContent=po.time||'';
+function renderModal(opts={}){
+  const p=S.profile, po=S.post, ver=p.verified?vb:'', r=actions.currentReel(), isReel=modalKind==='reel'&&r;
+  const pop=ui.animLike?'pop':''; ui.animLike=false;
+  let media;
+  if(isReel) media=r.video?`<video src="${r.video}" playsinline loop autoplay ${ui.reelMuted?'muted':''}></video><button class="mute" data-act="mute">${ic(ui.reelMuted?I.mute:I.sound)}</button>`:(r.cover?`<img src="${r.cover}" alt="">`:`<div class="phr" style="background:${phGradDark(ui.reelIndex)}"></div>`);
+  else{ const img=actions.currentPostImage(); media=img?`<img src="${img}" alt="">`:`<div class="phimg" style="background:${phGrad(ui.postIndex)}"></div>`; }
+  $('#mimg').innerHTML=media+(opts.bigHeart?`<div class="bigheart">${ic(I.heart(true))}</div>`:'');
+  const v=$('#mimg video'); if(v){ v.muted=ui.reelMuted; const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>{ v.muted=true; ui.reelMuted=true; v.play().catch(()=>{}); }); }
+  $('#mhd').innerHTML=`${av(p.avatar,32)}<div class="un2"><span>${esc(p.username)}</span>${ver}</div>${p.kind==='other'?(p.follow==='following'?`<button class="btn" data-act="toggle-follow">팔로잉</button>`:`<button class="btn primary" data-act="toggle-follow">팔로우</button>`):''}<button class="ibtn">${ic(I.more)}</button>`;
+  const liked=isReel?r.liked:po.liked, saved=isReel?false:po.saved;
+  $('#macts').innerHTML=`<button class="ab ${liked?'liked':''} ${pop}" data-act="${isReel?'rlike':'plike'}">${ic(I.heart(liked))}</button><button class="ab" data-act="focus-input">${ic(I.comment)}</button><button class="ab">${ic(I.send)}</button><span class="sp"></span>${isReel?'':`<button class="ab" data-act="psave">${ic(I.bookmark(saved))}</button>`}`;
+  const likes=isReel?r.likes:po.likes;
+  $('#mlikes').innerHTML=(cnt(likes)?`좋아요 ${cnt(likes)}개`:'')+(isReel&&p.showReelViews&&r.views?`<span style="font-weight:400;color:var(--muted);margin-left:10px">조회 ${esc(r.views)}회</span>`:'');
+  $('#mtime').textContent=isReel?'':(po.time||'');
   renderComments();
+  SNS.doubleTap($('#mimg'),()=>{ if(isReel) actions.toggleReelLike({onlyLike:true}); else actions.togglePostLike({onlyLike:true}); });
+}
+function commentRow(c,{reply=false}={}){
+  const cls=['crow',reply?'reply':'',ui.animNew===c.id?'new flash':'',ui.animFlash===c.id?'flash':''].join(' ');
+  const pop=ui.animCid===c.id?'pop':'';
+  return `<div class="${cls}" data-cid="${c.id}">${av(c.avatar,reply?24:32)}
+      <div class="body">
+        <div class="t"><b>${esc(c.username)}</b>${c.verified?vb:''}<span class="txt">${linkify(c.text)}</span></div>
+        <div class="meta"><span>${esc(c.time)}</span>${cnt(c.likes)?`<span class="b">좋아요 ${cnt(c.likes)}개</span>`:''}<button type="button" data-act="reply" data-cid="${c.id}">답글 달기</button></div>
+      </div>
+      <button class="hbtn ${c.liked?'liked':''} ${pop}" data-act="clike" data-cid="${c.id}">${ic(I.heart(c.liked))}</button>
+    </div>`;
 }
 function renderComments(){
   const p=S.profile, po=S.post, list=$('#mlist'), st=list.scrollTop;
-  const cap=po.caption?`<div class="crow caption">${av(p.avatar,32)}<div class="body"><div class="t"><b>${esc(p.username)}</b>${p.verified?vb:''}<span class="txt">${linkify(po.caption)}</span></div><div class="meta"><span>${esc(po.time)}</span></div></div></div>`:'';
-  const rows=S.comments.map(c=>`
-    <div class="crow" data-cid="${c.id}">${av(c.avatar,32)}
-      <div class="body">
-        <div class="t"><b>${esc(c.username)}</b>${c.verified?vb:''}<span class="txt">${linkify(c.text)}</span></div>
-        <div class="meta"><span>${esc(c.time)}</span>${cnt(c.likes)?`<span class="b">좋아요 ${cnt(c.likes)}개</span>`:''}<span class="b">답글 달기</span></div>
-        ${c.replies?`<div class="replies">답글 ${esc(c.replies)}개 보기</div>`:''}
-      </div>
-      <button class="hbtn ${c.liked?'liked':''}" data-act="clike" data-cid="${c.id}">${ic(I.heart(c.liked))}</button>
-    </div>`).join('');
+  const isReel=modalKind==='reel'&&actions.currentReel();
+  const capText=isReel?actions.currentReel().caption:po.caption;
+  const cap=capText?`<div class="crow caption">${av(p.avatar,32)}<div class="body"><div class="t"><b>${esc(p.username)}</b>${p.verified?vb:''}<span class="txt">${linkify(capText)}</span></div>${isReel?'':`<div class="meta"><span>${esc(po.time)}</span></div>`}</div></div>`:'';
+  const rows=actions.commentTree().map(({c,children})=>{
+    let h=commentRow(c); const n=children.length;
+    if(n){ const open=ui.expanded.has(c.id); h+=`<div class="replies"><button type="button" data-act="toggle-replies" data-cid="${c.id}">${open?'답글 숨기기':`답글 ${n}개 보기`}</button></div>`; if(open) h+=children.map(k=>commentRow(k,{reply:true})).join(''); }
+    else if(c.replies) h+=`<div class="replies"><button type="button">답글 ${esc(c.replies)}개 보기</button></div>`;
+    return h;
+  }).join('');
   list.innerHTML=cap+(rows||'<div class="empty"><b>아직 댓글이 없습니다.</b>대화를 시작해보세요.</div>');
   list.scrollTop=st;
 }
+function renderComposer(o={}){
+  const m=ui.cmode, bar=$('#mmode');
+  bar.classList.toggle('on',!!m);
+  $('#mmode-text').textContent=m?(m.type==='edit'?'댓글 수정 중':`@${m.username}님에게 답글 남기는 중`):'';
+  $('#mmode-x').innerHTML=ic(I.close);
+  const inp=$('#min'); if(typeof o.text==='string') inp.value=o.text;
+  $('#mpost').textContent=m&&m.type==='edit'?'완료':'게시';
+  $('#mpost').classList.toggle('on',inp.value.trim().length>0);
+  if(o.focus){ inp.focus(); try{ inp.setSelectionRange(inp.value.length,inp.value.length); }catch(e){} }
+}
 function renderAll(){renderProfile();if(modalOpen())renderModal();}
 
-const openModal=idx=>{ui.postIndex=idx;renderModal();$('#modal').classList.add('open');document.body.style.overflow='hidden';};
-const closeModal=()=>{$('#modal').classList.remove('open');document.body.style.overflow='';$('#epop').classList.remove('open');};
+const openModal=(idx,kind='post')=>{ modalKind=kind; ui.commentsFor=kind; if(kind==='reel') ui.reelIndex=Math.max(0,Math.min(idx,S.reels.length-1)); else ui.postIndex=idx; ui.cmode=null; ui.expanded.clear(); renderModal(); renderComposer({text:''}); $('#modal').classList.add('open'); document.body.style.overflow='hidden'; };
+const closeModal=()=>{ const v=$('#mimg video'); v&&v.pause(); $('#modal').classList.remove('open'); document.body.style.overflow=''; $('#epop').classList.remove('open'); if(ui.cmode){ ui.cmode=null; renderComposer({text:''}); } };
 $('#mclose').addEventListener('click',closeModal);
 $('#modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 document.addEventListener('click',e=>{
   if(e.target.closest('#editor')) return;
-  const t=e.target.closest('[data-act],[data-open]'); if(!t) return;
-  if(t.dataset.open!==undefined){openModal(+t.dataset.open);return;}
+  if(ui.suppressClick&&Date.now()-ui.suppressClick<600){ ui.suppressClick=0; return; }
+  const tab=e.target.closest('[data-tab]'); if(tab){ actions.setTab(tab.dataset.tab); return; }
+  const t=e.target.closest('[data-act],[data-open],[data-reel]'); if(!t) return;
+  if(t.dataset.open!==undefined){openModal(+t.dataset.open,'post');return;}
+  if(t.dataset.reel!==undefined){openModal(+t.dataset.reel,'reel');return;}
   switch(t.dataset.act){
     case 'toggle-follow': actions.toggleFollow(); break;
     case 'focus-input': $('#min').focus(); break;
     case 'plike': actions.togglePostLike(); break;
     case 'psave': actions.togglePostSave(); break;
+    case 'rlike': actions.toggleReelLike(); break;
     case 'clike': actions.toggleCommentLike(t.dataset.cid); break;
+    case 'reply': actions.beginReply(t.dataset.cid); break;
+    case 'toggle-replies': actions.toggleReplies(t.dataset.cid); break;
+    case 'mute': { const v=$('#mimg video'); ui.reelMuted=!ui.reelMuted; if(v){ v.muted=ui.reelMuted; v.play().catch(()=>{}); } t.innerHTML=ic(ui.reelMuted?I.mute:I.sound); break; }
   }
 });
+SNS.longPress($('#mlist'),'.crow:not(.caption)',row=>{ if(row.dataset.cid) actions.beginEdit(row.dataset.cid); });
+$('#mlist').addEventListener('dblclick',e=>{ const row=e.target.closest('.crow:not(.caption)'); if(row&&row.dataset.cid&&!e.target.closest('button')) actions.beginEdit(row.dataset.cid); });
 $('#memoji').innerHTML=ic(I.smile);
 $('#epop').innerHTML=['❤️','🙌','🔥','👏','😢','😍','😮','😂'].map(e=>`<button type="button">${e}</button>`).join('');
 $('#memoji').addEventListener('click',()=>$('#epop').classList.toggle('open'));
 $('#epop').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const inp=$('#min');inp.value+=b.textContent;inp.dispatchEvent(new Event('input'));inp.focus();});
 const min=$('#min'), mpost=$('#mpost');
 min.addEventListener('input',()=>mpost.classList.toggle('on',min.value.trim().length>0));
-const postComment=()=>{ if(actions.postComment(min.value)){min.value='';mpost.classList.remove('on');$('#epop').classList.remove('open');$('#mlist').scrollTop=0;} };
+const postComment=()=>{ const r=actions.postComment(min.value); if(r){ $('#epop').classList.remove('open'); if(!r.parentId){ const list=$('#mlist'); const cap=list.querySelector('.crow.caption'); list.scrollTop=cap?cap.offsetHeight:0; } } };
 min.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();postComment();}});
 mpost.addEventListener('click',postComment);
+$('#mmode-x').addEventListener('click',()=>actions.cancelMode());
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape')return;
   if($('#epop').classList.contains('open')){$('#epop').classList.remove('open');return;}
+  if(ui.cmode&&modalOpen()){actions.cancelMode();return;}
   if(modalOpen()){closeModal();return;}
   if(ui.shoot&&$('#editor').classList.contains('hidden'))SNS.openEditor();
 });
 
 SNS.init({platform:'web',hooks:{
-  renderAll, renderProfile, renderComments,
-  renderPost(){if(modalOpen())renderModal();},
-  openComments(){openModal(-1);},
+  renderAll, renderProfile, renderComments, renderComposer,
+  renderPost(o){if(modalOpen()&&modalKind==='post')renderModal(o);},
+  renderReel(o){if(modalOpen()&&modalKind==='reel')renderModal(o);},
+  openComments(){openModal(-1,'post');},
   resetView(){closeModal();}
 }});
 })();
